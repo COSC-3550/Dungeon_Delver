@@ -1,0 +1,71 @@
+# This .gitignore file should cover most common Unity project files that should not be tracked
+
+# =============== #
+# Unity generated #
+# =============== #
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ibrary/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# ===================================== #
+# Visual Studio / Rider / MonoDevelop / VSCode #
+# ===================================== #
+[Ee]xported[Oo]bj/
+.vs/
+.vscode/
+*.user
+*.userprefs
+*.suo
+*.sln.docstates
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# ============ #
+# Builds       #
+# ============ #
+*.apk
+*.unitypackage
+
+# ==================== #
+# Misc IDEs and editors #
+# ==================== #
+*.swp
+*.bak
+*.tmp
+*.tlog
+*.vsp
+*.vspx
+*.sap
+
+# ============== #
+# Unity specific #
+# ============== #
+sysinfo.txt
+*.stackdump
+
+# ============================== #
+# Various settings and caches    #
+# ============================== #
+[Tt]emp/
+[Ll]ibrary/
+[Ss]aved/
+
+# Ignore all asset meta files in the AssetStoreTools folder
+/[Aa]ssets/[Aa]sset[Ss]tore[Tt]ools*/*.meta
+
+# But keep the AssetStoreTools folder itself
+![Aa]ssets/[Aa]sset[Ss]tore[Tt]ools/
