@@ -49,6 +49,7 @@
     <Compile Include="Assets/__Scripts/TilemapManager.cs" />
     <Compile Include="Assets/__Scripts/MapInfo.cs" />
     <Compile Include="Assets/__Scripts/ProtoTools/PT_XMLReader.cs" />
+    <Compile Include="Assets/__Scripts/Dray.cs" />
     <Compile Include="Assets/__Scripts/ProtoTools/FloatingScore.cs" />
     <Compile Include="Assets/__Scripts/ProtoTools/Utils.cs" />
     <Compile Include="Assets/__Scripts/Spiker.cs" />

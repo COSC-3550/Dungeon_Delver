@@ -11,12 +11,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Ground
+  - Enemies
+  - Dray
+  - Items
+  - Grappler
+  - GrapTiles
   - 
   - 
   - 
@@ -38,6 +38,21 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Ground
+    uniqueID: 313214551
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Enemies
+    uniqueID: 3747527121
+    locked: 0
+  - name: Grappler
+    uniqueID: 3327080823
+    locked: 0
+  - name: Dray
+    uniqueID: 4098238683
+    locked: 0
+  - name: Item
+    uniqueID: 2311494897
     locked: 0

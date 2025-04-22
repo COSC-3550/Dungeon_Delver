@@ -41,7 +41,7 @@ public class MapInfo : MonoBehaviour
                 }
             }
         }
-        Debug.Log("Map Size: " + W + " wide by " + H + "high.");
+        Debug.Log("Map Size: " + W + " wide by " + H + " high.");
     }
 
     public static BoundsInt GET_MAP_BOUNDS()
