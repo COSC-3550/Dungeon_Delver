@@ -1,11 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Dray : MonoBehaviour
 {
-    [Header("Inscribed")] public float speed = 5;
-    [Header("Dynamic")] public int dirHeld = -1;
+    public enum eMode{ idle, move, attack}
+    
+    [Header("Inscribed")] 
+    public float speed = 5;
+    public float attackDuration = 0.25f;
+    public float attackDelay = 0.5f;
+    
+    [Header("Dynamic")] 
+    public int dirHeld = -1;
+    public int facing = 1;
+    public eMode mode = eMode.idle;
+
+    public float timeAtkDone = 0;
+    public float timeAtkNext = 0;
 
     private Rigidbody2D rigid;
     private Animator anim;
@@ -29,37 +42,51 @@ public class Dray : MonoBehaviour
 
     void Update()
     {
-        dirHeld = -1;
-        /*if (Input.GetKey(KeyCode.RightArrow)) dirHeld = 0;
-        if (Input.GetKey(KeyCode.UpArrow)) dirHeld = 1;
-        if (Input.GetKey(KeyCode.LeftArrow)) dirHeld = 2;
-        if (Input.GetKey(KeyCode.DownArrow)) dirHeld = 3;*/
-        for (int i = 0; i < keys.Length; i++)
+        if(mode == eMode.attack && Time.time >= timeAtkDone) mode = eMode.idle;
+
+        if (mode == eMode.idle || mode == eMode.move)
         {
-            if (Input.GetKey(keys[i])) dirHeld = i % 4;
+            dirHeld = -1;
+            for (int i=0; i<keys.Length; i++)
+            {
+                if (Input.GetKey(keys[i])) dirHeld = i % 4;
+            }
+
+            if (dirHeld == -1)
+            {
+                mode = eMode.idle;
+            }
+            else
+            {
+                facing = dirHeld;
+                mode = eMode.move;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Z) && Time.time >= timeAtkNext)
+            {
+                mode = eMode.attack;
+                timeAtkDone = Time.time + attackDuration;
+                timeAtkNext = Time.time + attackDelay;
+            }
         }
-        
+
         Vector2 vel = Vector2.zero;
-
-        /*switch (dirHeld)
+        switch(mode)
         {
-            case 0 : vel = Vector2.right; break;
-            case 1: vel = Vector2.up; break;
-            case 2: vel = Vector2.left; break;
-            case 3: vel = Vector2.down; break;
-        }*/
-        if (dirHeld > -1) vel = directions[dirHeld];
-        
-        rigid.velocity = vel * speed;
-
-        if (dirHeld == -1)
-        {
-            anim.speed = 0;
+            case eMode.attack:
+                anim.Play("Dray_Attack_" + facing);
+                anim.speed = 0;
+                break;
+            case eMode.move:
+                vel = directions[dirHeld];
+                anim.Play("Dray_Walk_" + facing);
+                anim.speed = 1;
+                break;
+            case eMode.idle:
+                anim.Play("Dray_Walk_"+ facing);
+                anim.speed = 0;
+                break;
         }
-        else
-        {
-            anim.Play("Dray_Walk_"+dirHeld);
-            anim.speed = 1;
-        }
+       rigid.velocity = vel * speed; 
     }
 }
