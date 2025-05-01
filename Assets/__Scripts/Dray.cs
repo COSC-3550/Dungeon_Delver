@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 [RequireComponent (typeof(InRoom))]
 public class Dray : MonoBehaviour, IFacingMover, IKeyMaster
 {
+    static private Dray S;
     static public IFacingMover IFM;
     //public enum eMode{ idle, move, attack}
     public enum eMode{ idle, move, attack, roomTrans}
@@ -15,12 +16,23 @@ public class Dray : MonoBehaviour, IFacingMover, IKeyMaster
     public float attackDuration = 0.25f;
     public float attackDelay = 0.5f;
     public float roomTransDelay = 0.5f;
+    public int maxHealth = 10;
     
     [Header("Dynamic")] 
     public int dirHeld = -1;
     public int facing = 1;
     public eMode mode = eMode.idle;
     [SerializeField] [Range(0, 20)] private int _numKeys = 0;
+
+    [SerializeField] [Range(0, 10)] 
+    private int _health;
+
+    public int health
+    {
+        get { return _health; }
+        set {_health = value; }
+    }
+    
 
     public float timeAtkDone = 0;
     public float timeAtkNext = 0;
@@ -44,10 +56,12 @@ public class Dray : MonoBehaviour, IFacingMover, IKeyMaster
 
     void Awake()
     {
+        S = this;
         IFM = this;
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         inRm = GetComponent<InRoom>();
+        health = maxHealth;
     }
 
     void Update()
@@ -149,6 +163,16 @@ public class Dray : MonoBehaviour, IFacingMover, IKeyMaster
                 roomTransDone = Time.time + roomTransDelay;
             }
         }
+    }
+    
+    static public int HEALTH
+    {
+        get { return S._health; }
+    }
+
+    static public int NUM_KEYS
+    {
+        get { return S._numKeys; }
     }
     
     //---------------------------------Implementation of IFacingMover----------------------------------
