@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 [RequireComponent (typeof(InRoom))]
-public class Dray : MonoBehaviour, IFacingMover
+public class Dray : MonoBehaviour, IFacingMover, IKeyMaster
 {
     static public IFacingMover IFM;
     //public enum eMode{ idle, move, attack}
@@ -20,6 +20,7 @@ public class Dray : MonoBehaviour, IFacingMover
     public int dirHeld = -1;
     public int facing = 1;
     public eMode mode = eMode.idle;
+    [SerializeField] [Range(0, 20)] private int _numKeys = 0;
 
     public float timeAtkDone = 0;
     public float timeAtkNext = 0;
@@ -150,6 +151,7 @@ public class Dray : MonoBehaviour, IFacingMover
         }
     }
     
+    //---------------------------------Implementation of IFacingMover----------------------------------
     public int GetFacing() {return facing;}
     
     public float GetSpeed() {return speed;}
@@ -178,5 +180,17 @@ public class Dray : MonoBehaviour, IFacingMover
     public Vector2 GetGridPosInRoom(float mult = -1)
     {
         return inRm.GetGridPosInRoom(mult);
+    }
+    
+    //---------------------------------Implementation of IKeyMaster----------------------------------
+    public int keyCount
+    {
+        get {return _numKeys;}
+        set { _numKeys = value; }
+    }
+
+    public Vector2 pos
+    {
+        get { return (Vector2) transform.position; }
     }
 }

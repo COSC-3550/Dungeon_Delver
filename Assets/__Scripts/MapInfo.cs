@@ -48,6 +48,9 @@ public class MapInfo : MonoBehaviour
                 }
             }
         }
+        
+        TileSwapManager.SWAP_TILES(MAP);
+        
         Debug.Log("Map Size: " + W + " wide by " + H + " high.");
     }
 
