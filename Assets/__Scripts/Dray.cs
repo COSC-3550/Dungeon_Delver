@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Dray : MonoBehaviour
+[RequireComponent (typeof(InRoom))]
+public class Dray : MonoBehaviour, IFacingMover
 {
-    public enum eMode{ idle, move, attack}
+    static public IFacingMover IFM;
+    //public enum eMode{ idle, move, attack}
+    public enum eMode{ idle, move, attack, roomTrans}
     
     [Header("Inscribed")] 
     public float speed = 5;
     public float attackDuration = 0.25f;
     public float attackDelay = 0.5f;
+    public float roomTransDelay = 0.5f;
     
     [Header("Dynamic")] 
     public int dirHeld = -1;
@@ -19,9 +23,12 @@ public class Dray : MonoBehaviour
 
     public float timeAtkDone = 0;
     public float timeAtkNext = 0;
+    private float roomTransDone = 0;
+    private Vector2 roomTransPos;
 
     private Rigidbody2D rigid;
     private Animator anim;
+    private InRoom inRm;
     
     private Vector2[] directions = new Vector2[4]
     {
@@ -36,13 +43,24 @@ public class Dray : MonoBehaviour
 
     void Awake()
     {
+        IFM = this;
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        inRm = GetComponent<InRoom>();
     }
 
     void Update()
     {
-        if(mode == eMode.attack && Time.time >= timeAtkDone) mode = eMode.idle;
+        if (mode == eMode.roomTrans)
+        {
+            rigid.velocity = Vector3.zero;
+            anim.speed = 0;
+            posInRoom = roomTransPos;
+            if (Time.time < roomTransDone) return;
+            mode = eMode.idle;
+        }
+        
+        if (mode == eMode.attack && Time.time >= timeAtkDone) mode = eMode.idle;
 
         if (mode == eMode.idle || mode == eMode.move)
         {
@@ -88,5 +106,77 @@ public class Dray : MonoBehaviour
                 break;
         }
        rigid.velocity = vel * speed; 
+    }
+
+    void LateUpdate()
+    {
+        Vector2 gridPosIR = GetGridPosInRoom(0.25f);
+
+        int doorNum;
+        for (doorNum = 0; doorNum < 4; doorNum++)
+        {
+            if (gridPosIR == InRoom.DOORS[doorNum]) break;
+        }
+        
+        if (doorNum > 3 || doorNum != facing) return;
+
+        Vector2 rm = roomNum;
+        switch (doorNum)
+        {
+            case 0:
+                rm.x += 1;
+                break;
+            case 1:
+                rm.y += 1;
+                break;
+            case 2:
+                rm.x -= 1;
+                break;
+            case 3:
+                rm.y -= 1;
+                break;
+        }
+
+        if (0 <= rm.x && rm.x <= InRoom.MAX_RM_X)
+        {
+            if (0 <= rm.y && rm.y <= InRoom.MAX_RM_Y)
+            {
+                roomNum = rm;
+                roomTransPos = InRoom.DOORS[(doorNum + 2) % 4];
+                posInRoom = roomTransPos;
+                mode = eMode.roomTrans;
+                roomTransDone = Time.time + roomTransDelay;
+            }
+        }
+    }
+    
+    public int GetFacing() {return facing;}
+    
+    public float GetSpeed() {return speed;}
+    
+    public bool moving {get { return (mode == eMode.move); } }
+
+    public float gridMult
+    {
+        get { return inRm.gridMult; }
+    }
+    
+    public bool isInRoom {get {return inRm.isInRoom;}}
+
+    public Vector2 roomNum
+    {
+        get { return inRm.roomNum; }
+        set { inRm.roomNum = value; }
+    }
+
+    public Vector2 posInRoom
+    {
+        get { return inRm.posInRoom; }
+        set { inRm.posInRoom = value; }
+    }
+
+    public Vector2 GetGridPosInRoom(float mult = -1)
+    {
+        return inRm.GetGridPosInRoom(mult);
     }
 }
